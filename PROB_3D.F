@@ -5320,7 +5320,7 @@ c           write (6,*) "Filling with unit density"
            do k = ARG_L3(rho), domlo(3)-1
               do j = ARG_L2(rho), ARG_H2(rho)
                  do i = ARG_L1(rho), ARG_H1(rho)
-                    rho(i,j,k) = denfact
+                    rho(i,j,k) = rb_rho
                  end do
               end do
            end do
@@ -5340,7 +5340,7 @@ c           write (6,*) "Filling with unit density"
             do k = domhi(3)+1, ARG_H3(rho)
                do j = ARG_L2(rho), ARG_H2(rho)
                   do i = ARG_L1(rho), ARG_H1(rho)
-                     rho(i,j,k) = denfact
+                     rho(i,j,k) = rb_rho
                   end do
                end do
             end do
