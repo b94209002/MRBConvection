@@ -1,8 +1,8 @@
 #AMREX_HOME defines the directory in which we will find the BoxLib directory
-AMREX_HOME = ../../../amrex
+AMREX_HOME = ../../amrex
 
 #TOP defines the directory in which we will find Source, Exec, etc.
-TOP = ../..
+TOP = ../
 
 #
 # Variables for the user to set ...
@@ -56,4 +56,4 @@ DEFINES += -DMOREGENGETFORCE
 Bpack   := ./Make.package
 Blocs   := .
 
-include $(TOP)/Exec/Make.IAMR
+include $(TOP)Exec/Make.IAMR
