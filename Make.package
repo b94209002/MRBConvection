@@ -1,5 +1,5 @@
 
-FEXE_headers += probdata.H PROB_F.H
+FEXE_headers += probdata.H PROB_F.H DERIVE_F.H
 FEXE_sources += PROB_$(DIM)D.F 
 FEXE_derive += DERIVE_$(DIM)D.F
 
