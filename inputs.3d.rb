@@ -7,7 +7,7 @@ max_step 		= 30000
 
 stop_time 		= 120.0
 
-amr.n_cell              = 32 32 32
+amr.n_cell              = 128 128 128
 
 amr.max_level           = 0
 

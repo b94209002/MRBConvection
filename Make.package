@@ -1,7 +1,7 @@
 
 FEXE_headers += probdata.H PROB_F.H DERIVE_F.H NS_BC.H
 FEXE_sources += PROB_$(DIM)D.F 
-FEXE_derive += DERIVE_$(DIM)D.F
+FEXE_sources += DERIVE_$(DIM)D.F
 
 ifeq (${USE_SWIRL_DATA}, TRUE)
   fEXE_sources += vswirl.f
