@@ -13,9 +13,9 @@
 
   rb_rho = 1.
   rb_d0 = 0.
-  rb_dh = -2.611e1
+  rb_dh = 1.736e1
   rb_m0 = 0.
   rb_mh = -5.222e1
-  rb_bv =  2.611e1
+  rb_bv = 6.958e1
 
  /

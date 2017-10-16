@@ -3,11 +3,11 @@
 # INPUTS.3D.EULER
 #*******************************************************************************
 
-max_step 		= 30000
+max_step 		= 99999
 
 stop_time 		= 120.0
 
-amr.n_cell              = 128 128 128
+amr.n_cell              = 192 192 64
 
 amr.max_level           = 0
 
@@ -35,7 +35,7 @@ amr.probin_file 	= probin.3d.rb
 geometry.coord_sys   =  0
 
 geometry.prob_lo     =  0. 0. 0.
-geometry.prob_hi     =  1. 1. 1.
+geometry.prob_hi     =  3. 3. 1.
 
 geometry.is_periodic =  1 1 0
 
