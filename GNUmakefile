@@ -10,7 +10,7 @@ TOP = ../
 
 DIM        = 3
 COMP	   = intel
-DEBUG	   = FALSE
+DEBUG	   = TRUE
 USE_MPI    = TRUE
 USE_OPENMP = FALSE
 

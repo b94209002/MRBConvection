@@ -5,9 +5,9 @@
 
 max_step 		= 99999
 
-stop_time 		= 120.0
+stop_time 		= 1200.0
 
-amr.n_cell              = 1024 1024 64
+amr.n_cell              = 256 256 64
 
 amr.max_level           = 0
 
@@ -20,14 +20,14 @@ amr.v                   = 1
 
 amr.check_int		= 10000 
 
-amr.plot_int		= 50
+amr.plot_int		= 200
 
 ns.cfl                  = 0.7  # CFL number used to set dt
 
 ns.init_shrink          = 1.0  # factor which multiplies the very first time step
 
-ns.vel_visc_coef        = 0.01 
-ns.scal_diff_coefs      = 0.014 0.014
+ns.vel_visc_coef        = 0.001 
+ns.scal_diff_coefs      = 0.0014 0.0014
 ns.do_trac2             = 1
 
 amr.probin_file 	= probin.3d.rb
@@ -35,7 +35,7 @@ amr.probin_file 	= probin.3d.rb
 geometry.coord_sys   =  0
 
 geometry.prob_lo     =  0. 0. 0.
-geometry.prob_hi     =  16. 16. 1.
+geometry.prob_hi     =  4. 4. 1.
 
 geometry.is_periodic =  1 1 0
 
