@@ -7,7 +7,7 @@ max_step 		= 10
 
 stop_time 		= 120.0
 
-amr.n_cell              = 32 32 32
+amr.n_cell              = 64 64 64
 
 amr.max_level           = 0
 
@@ -26,8 +26,8 @@ ns.cfl                  = 0.7  # CFL number used to set dt
 
 ns.init_shrink          = 1.0  # factor which multiplies the very first time step
 
-ns.vel_visc_coef        = 0.01 
-ns.scal_diff_coefs      = 0.014 0.014
+ns.vel_visc_coef        = 0.001 
+ns.scal_diff_coefs      = 0.0014 0.0014
 ns.do_trac2             = 1
 
 amr.probin_file 	= probin.3d.rb
@@ -51,5 +51,7 @@ ns.hi_bc             = 0 0 4
 amr.blocking_factor     = 8
 amr.ref_ratio           = 2 2 2 2
 
-amr.derive_plot_vars    = mag_vort liquid_water
+ns.sum_interval         = 1
+amr.derive_plot_vars    = energy
+
 proj.v=1

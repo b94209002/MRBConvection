@@ -4967,19 +4967,21 @@ c
       integer    level, grid_no
 
       integer    i,j,k
-      REAL_T     D,M,hz,z
+      REAL_T     D,M,hz,hn,z,tmp
 
 #include <probdata.H>
 
-      hz     = delta(3) 
+      hz     = delta(3)
+      hn     = one/rb_bv
 !$omp parallel do private(i,j,k,z,D,M)
       do k = lo(3), hi(3)
-         z = xlo(3) + hz * ( dble( k-lo(3) ) + half ) 
+         z = xlo(3) + hz * ( dble( k-lo(3) ) + half )
          do j = lo(2), hi(2)
             do i = lo(1), hi(1)
                D = dat(i,j,k,1)
                M = dat(i,j,k,2)
-               e(i,j,k,1) = max(1.d-10, M - D + rb_bv*z)
+               tmp = M - D + rb_bv * z
+               e(i,j,k,1) = max(1.d-10, hn*tmp)
             end do
          end do
       end do
