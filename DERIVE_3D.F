@@ -4975,7 +4975,7 @@ c
       hn     = one/rb_bv
 !$omp parallel do private(i,j,k,z,D,M)
       do k = lo(3), hi(3)
-         z = xlo(3) + hz * ( dble( k-lo(3) ) + half ) 
+         z = xlo(3) + hz * ( dble( k-lo(3) ) + half )
          do j = lo(2), hi(2)
             do i = lo(1), hi(1)
                D = dat(i,j,k,1)

@@ -51,5 +51,7 @@ ns.hi_bc             = 0 0 4
 amr.blocking_factor     = 8
 amr.ref_ratio           = 2 2 2 2
 
-amr.derive_plot_vars    = mag_vort liquid_water
+ns.sum_interval         = 1
+amr.derive_plot_vars    = energy
+
 proj.v=1
