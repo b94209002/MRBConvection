@@ -1041,13 +1041,11 @@ NavierStokes::sum_integrated_quantities ()
 #endif
 */
 }
-
 void
 NavierStokes::setPlotVariables()
 {
     AmrLevel::setPlotVariables();
 }
-
 void
 NavierStokes::writePlotFile (const std::string& dir,
                              std::ostream&  os,
