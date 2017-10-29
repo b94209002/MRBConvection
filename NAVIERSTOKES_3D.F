@@ -783,17 +783,15 @@ c :: ----------------------------------------------------------
 c :: SUMLiquid
 c :: ----------------------------------------------------------
 c ::
-      subroutine FORT_SUMLIQUID(dat,pres,DIMS(dat),DIMS(pres),DIMS(grid),delta,
+      subroutine FORT_SUMLIQUID(dat,DIMS(dat),DIMS(grid),delta,
      &                          liquid,ksize,liquidVars)
 
       implicit none
       integer DIMDEC(dat)
-      integer DIMDEC(pres)
       integer DIMDEC(grid)
       integer ksize, LiquidVars
       REAL_T  delta(SDIM)
       REAL_T  dat(DIMV(dat),16)
-      REAL_T  pres(DIMV(pres),4)
       REAL_T  liquid(0:ksize*liquidVars-1)
       
       integer i, j, k

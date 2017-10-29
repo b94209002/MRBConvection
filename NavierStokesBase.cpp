@@ -3885,18 +3885,17 @@ NavierStokesBase::sum_liquid_quantities ()
 
 }
 void
-NavierStokesBase::LiquidSum (Real time, Real *turb, int ksize, int liquidVars)
+NavierStokesBase::LiquidSum (Real time, Real *liquid, int ksize, int liquidVars)
 {
     const Real* dx = geom.CellSize();
 
     const int liquidGrow(0);
     const int presGrow(0);
-//    auto MF = derive("TurbVars",time,turbGrow);
-//    auto presMF = derive("PresVars",time,presGrow);
+    auto liquidMF = derive("liquidVars",time,liquidGrow);
 
     BoxArray baf;
 
-/*
+
     if (level < parent->finestLevel())
     {
         baf = parent->boxArray(level+1);
@@ -3905,49 +3904,38 @@ NavierStokesBase::LiquidSum (Real time, Real *turb, int ksize, int liquidVars)
 
     std::vector< std::pair<int,Box> > isects;
 
-    for (MFIter turbMfi(*turbMF), presMfi(*presMF);
-	 turbMfi.isValid() && presMfi.isValid();
-	 ++turbMfi, ++presMfi)
+    for (MFIter liquidMfi(*liquidMF); liquidMfi.isValid();
+	 ++liquidMfi)
     {
-	FArrayBox& turbFab = (*turbMF)[turbMfi];
-	FArrayBox& presFab = (*presMF)[presMfi];
+	FArrayBox& liquidFab = (*liquidMF)[liquidMfi];
 
         if (level < parent->finestLevel())
         {
-            baf.intersections(grids[turbMfi.index()],isects);
+            baf.intersections(grids[liquidMfi.index()],isects);
 
             for (int ii = 0, N = isects.size(); ii < N; ii++)
             {
-                presFab.setVal(0,isects[ii].second,0,presMF->nComp());
-                turbFab.setVal(0,isects[ii].second,0,turbMF->nComp());
+                liquidFab.setVal(0,isects[ii].second,0,liquidMF->nComp());
             }
         }
     }
 
-    turbMF->FillBoundary(0,turbMF->nComp(), geom.periodicity());
-    presMF->FillBoundary(0,presMF->nComp(), geom.periodicity());
-
-    for (MFIter turbMfi(*turbMF), presMfi(*presMF);
-	 turbMfi.isValid() && presMfi.isValid();
-	 ++turbMfi, ++presMfi)
+    liquidMF->FillBoundary(0,liquidMF->nComp(), geom.periodicity());
+    for (MFIter liquidMfi(*liquidMF); liquidMfi.isValid();
+	 ++liquidMfi)
     {
-	FArrayBox& turbFab = (*turbMF)[turbMfi];
-	FArrayBox& presFab = (*presMF)[presMfi];
+	FArrayBox& liquidFab = (*liquidMF)[liquidMfi];
 
-        const Real* turbData = turbFab.dataPtr();
-        const Real* presData = presFab.dataPtr();
-        const int*  dlo = turbFab.loVect();
-        const int*  dhi = turbFab.hiVect();
-        const int*  plo = presFab.loVect();
-        const int*  phi = presFab.hiVect();
-	const Box& grdbx = grids[turbMfi.index()];
+        const Real* liquidData = liquidFab.dataPtr();
+        const int*  dlo = liquidFab.loVect();
+        const int*  dhi = liquidFab.hiVect();
+	const Box& grdbx = grids[liquidMfi.index()];
         const int*  lo  = grdbx.loVect();
         const int*  hi  = grdbx.hiVect();
 
-        FORT_SUMTURB(turbData,presData,ARLIM(dlo),ARLIM(dhi),ARLIM(plo),ARLIM(phi),ARLIM(lo),ARLIM(hi),
-		     dx,turb,&ksize,&turbVars);
+        FORT_SUMLIQUID(liquidData,ARLIM(dlo),ARLIM(dhi),ARLIM(lo),ARLIM(hi),
+		     dx,liquid,&ksize,&liquidVars);
    } 
-*/
 }
 
 
