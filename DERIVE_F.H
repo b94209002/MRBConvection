@@ -40,6 +40,7 @@
 #    define FORT_DERFORCEY   derforcey
 #    define FORT_DERFORCEZ   derforcez
 #endif
+#    define FORT_DERLIQUIDVARS derliquidvars
 #    define FORT_DERTURBVARS derturbvars
 #    define FORT_DERPRESVARS derpresvars
 #ifdef SUMJET
@@ -87,6 +88,7 @@
 #    define FORT_DERFORCEY   DERFORCEY
 #    define FORT_DERFORCEZ   DERFORCEZ
 #endif
+#    define FORT_DERLIQUIDVARS DERLIQUIDVARS
 #    define FORT_DERTURBVARS DERTURBVARS
 #    define FORT_DERPRESVARS DERPRESVARS
 #ifdef SUMJET
@@ -134,6 +136,7 @@
 #    define FORT_DERFORCEY   derforcey
 #    define FORT_DERFORCEZ   derforcez
 #endif
+#    define FORT_DERLIQUIDVARS derliquidvars
 #    define FORT_DERTURBVARS derturbvars
 #    define FORT_DERPRESVARS derpresvars
 #ifdef SUMJET
@@ -181,6 +184,7 @@
 #    define FORT_DERFORCEY   derforcey_
 #    define FORT_DERFORCEZ   derforcez_
 #endif
+#    define FORT_DERLIQUIDVARS derliquidvars_
 #    define FORT_DERTURBVARS derturbvars_
 #    define FORT_DERPRESVARS derpresvars_
 #ifdef SUMJET
@@ -476,6 +480,14 @@ extern "C" {
 			   const amrex::Real* time, const amrex::Real* dt, const int* bcrec, 
                            const int* level, const int* grid_no) ;
 #endif
+     void FORT_DERLIQUIDVARS(amrex::Real* data, ARLIM_P(dat_lo), ARLIM_P(dat_hi),
+                           const int* nvar, const amrex::Real* compdat,
+                           ARLIM_P(clo), ARLIM_P(chi), const int* ncomp,
+                           const int* lo, const int* hi,
+                           const int* domain_lo, const int* domain_hi,
+                           const amrex::Real* delta, const amrex::Real* xlo,
+                           const amrex::Real* time, const amrex::Real* dt, const int* bcrec,
+                           const int* level, const int* grid_no) ;
 
      void FORT_DERTURBVARS(amrex::Real* data, ARLIM_P(dat_lo), ARLIM_P(dat_hi),
                            const int* nvar, const amrex::Real* compdat,

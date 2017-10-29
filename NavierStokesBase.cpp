@@ -3826,9 +3826,9 @@ NavierStokesBase::sum_liquid_quantities ()
     const int finestLevel = parent->finestLevel();
     const Real *dx = parent->Geom(finestLevel).CellSize();
     const int ksize(parent->Geom(finestLevel).Domain().length(2));
-    const int liquidVars(33);
+    const int liquidVars(1);
     int refRatio(1);
-
+   
     Real* liquid = new Real[liquidVars*ksize];
 
     for (int i=0; i<liquidVars*ksize; i++) liquid[i]=0;
@@ -3842,7 +3842,7 @@ NavierStokesBase::sum_liquid_quantities ()
 	for (int i=0; i<liquidVars*levKsize; i++) levLiquid[i]=0;
     
         NavierStokesBase& ns_level = getLevel(lev);
-	ns_level.LiquidSum(time,levLiquid,levKsize,liquidVars);
+        ns_level.LiquidSum(time,levLiquid,levKsize,liquidVars);
 
 	if (lev<finestLevel)  refRatio *= parent->refRatio(lev)[2];
 	else                  refRatio  = 1;
@@ -3854,7 +3854,6 @@ NavierStokesBase::sum_liquid_quantities ()
 
 	delete [] levLiquid;
     }
-
     ParallelDescriptor::ReduceRealSum(&liquid[0], ksize*liquidVars, ParallelDescriptor::IOProcessorNumber());
 
     if (ParallelDescriptor::IOProcessor())
@@ -3881,6 +3880,8 @@ NavierStokesBase::sum_liquid_quantities ()
         fclose(file);
  
     } 
+
+
     delete [] liquid;
 
 }

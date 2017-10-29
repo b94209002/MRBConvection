@@ -1149,6 +1149,42 @@ c
 
       end
 
+      subroutine FORT_DERLIQUIDVARS(e,DIMS(e),nv,dat,DIMS(dat),ncomp,
+     &                            lo,hi,domlo,domhi,delta,xlo,time,dt,
+     &                            bc,level,grid_no)
+
+      implicit none
+
+      integer    lo(SDIM), hi(SDIM)
+      integer    DIMDEC(e)
+      integer    DIMDEC(dat)
+      integer    domlo(SDIM), domhi(SDIM)
+      integer    nv, ncomp
+      integer    bc(SDIM,2,ncomp)
+      REAL_T     delta(SDIM), xlo(SDIM)
+      REAL_T     time, dt
+      REAL_T     e(DIMV(e),nv)
+      REAL_T     dat(DIMV(dat),ncomp)
+      integer    level, grid_no
+
+      integer    i,j,k
+      REAL_T     tdx, tdy, tdz
+
+      tdx = 1.0d0/(two*delta(1))
+      tdy = 1.0d0/(two*delta(2))
+      tdz = 1.0d0/(two*delta(3))
+
+      do k = lo(3), hi(3)
+         do j = lo(2), hi(2)
+            do i = lo(1), hi(1)
+               e(i,j,k,1) = dat(i,j,k,1)
+            enddo
+         enddo
+      enddo
+
+      end
+
+
 #ifdef SUMJET
       subroutine FORT_DERJETPRESVARS (e,DIMS(gp),nv,dat,DIMS(dat),ncomp,
      &                                lo,hi,domlo,domhi,delta,xlo,time,dt,

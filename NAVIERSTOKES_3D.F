@@ -800,7 +800,6 @@ c ::
 
       REAL_T dx, dy, dz
 
-
       ilo = ARG_L1(grid)
       ihi = ARG_H1(grid)
       jlo = ARG_L2(grid)
@@ -825,9 +824,6 @@ c ::
 
 
       end
-
-
-
 
        subroutine FORT_MAXVAL(rho,DIMS(rho),DIMS(grid),mxval)
 
