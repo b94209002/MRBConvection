@@ -484,7 +484,12 @@ NavierStokes::variableSetUp ()
     derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac,1);
     derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac2,2);
 
-    //
+    derive_lst.add("LiquidVars",IndexType::TheCellType(),16,FORT_DERTURBVARS,grow_box_by_one);
+    derive_lst.addComponent("LiquidVars",desc_lst,State_Type,Trac,1);
+    derive_lst.addComponent("LiquidVars",desc_lst,State_Type,Trac,1);
+    derive_lst.addComponent("LiquidbVars",desc_lst,State_Type,Xvel,BL_SPACEDIM);
+
+
     // **************  DEFINE ERROR ESTIMATION QUANTITIES  *************
     //
     error_setup();
