@@ -3826,7 +3826,7 @@ NavierStokesBase::sum_liquid_quantities ()
     const int finestLevel = parent->finestLevel();
     const Real *dx = parent->Geom(finestLevel).CellSize();
     const int ksize(parent->Geom(finestLevel).Domain().length(2));
-    const int liquidVars(1);
+    const int liquidVars(13);
     int refRatio(1);
    
     Real* liquid = new Real[liquidVars*ksize];
@@ -3927,6 +3927,7 @@ NavierStokesBase::LiquidSum (Real time, Real *liquid, int ksize, int liquidVars)
     {
 	FArrayBox& liquidFab = (*liquidMF)[liquidMfi];
 
+        RealBox gridloc  = RealBox(grids[liquidMfi.index()],geom.CellSize(),geom.ProbLo());
         const Real* liquidData = liquidFab.dataPtr();
         const int*  dlo = liquidFab.loVect();
         const int*  dhi = liquidFab.hiVect();
@@ -3935,7 +3936,7 @@ NavierStokesBase::LiquidSum (Real time, Real *liquid, int ksize, int liquidVars)
         const int*  hi  = grdbx.hiVect();
 
         FORT_SUMLIQUID(liquidData,ARLIM(dlo),ARLIM(dhi),ARLIM(lo),ARLIM(hi),
-		     dx,liquid,&ksize,&liquidVars);
+		     dx,liquid,&ksize,&liquidVars,gridloc.lo(),gridloc.hi());
    } 
 }
 

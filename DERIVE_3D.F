@@ -1168,16 +1168,24 @@ c
       integer    level, grid_no
 
       integer    i,j,k
-      REAL_T     tdx, tdy, tdz
+      REAL_T     hz,z, hn, tmp
 
-      tdx = 1.0d0/(two*delta(1))
-      tdy = 1.0d0/(two*delta(2))
-      tdz = 1.0d0/(two*delta(3))
+#include <probdata.H>
+
+      hz = delta(3)
+      hn = one/rb_bv
 
       do k = lo(3), hi(3)
+         z = xlo(3) + hz * ( dble( k-lo(3) ) + half ) 
          do j = lo(2), hi(2)
             do i = lo(1), hi(1)
                e(i,j,k,1) = dat(i,j,k,1)
+               e(i,j,k,2) = dat(i,j,k,2)
+               e(i,j,k,3) = dat(i,j,k,3)
+               e(i,j,k,4) = dat(i,j,k,4)
+               e(i,j,k,5) = dat(i,j,k,5)
+               tmp = e(i,j,k,2) - e(i,j,k,1) + rb_bv * z
+               e(i,j,k,6) = max(0.d0, hn*tmp)
             enddo
          enddo
       enddo

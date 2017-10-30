@@ -784,13 +784,15 @@ c :: SUMLiquid
 c :: ----------------------------------------------------------
 c ::
       subroutine FORT_SUMLIQUID(dat,DIMS(dat),DIMS(grid),delta,
-     &                          liquid,ksize,liquidVars)
+     &                          liquid,ksize,liquidVars,xlo,xhi)
 
       implicit none
       integer DIMDEC(dat)
       integer DIMDEC(grid)
       integer ksize, LiquidVars
       REAL_T  delta(SDIM)
+      REAL_T  xlo(SDIM)
+      REAL_T  xhi(SDIM)
       REAL_T  dat(DIMV(dat),16)
       REAL_T  liquid(0:ksize*liquidVars-1)
       
@@ -798,7 +800,12 @@ c ::
       integer ilo, jlo, klo
       integer ihi, jhi, khi
 
-      REAL_T dx, dy, dz
+      REAL_T dx, dy, dz, area,z
+      REAL_T D,M,ux,uy,uz,uh,Q
+      REAL_T D_z,M_z,E
+
+
+#include <probdata.H>
 
       ilo = ARG_L1(grid)
       ihi = ARG_H1(grid)
@@ -811,12 +818,41 @@ c ::
       dy = delta(2)
       dz = delta(3)
 
+      area =dx*dy
 
       do k = klo, khi
+         z = xlo(3) + dz * ( dble( k-klo ) + half )
          do i = ilo, ihi
             do j = jlo, jhi
 
-               liquid(k*liquidVars+0) = liquid(k*liquidVars+0)
+               D = dat(i,j,k,1)
+               M = dat(i,j,k,2)
+               ux = dat(i,j,k,3)
+               uy = dat(i,j,k,4)
+               uz = dat(i,j,k,5)
+               Q = dat(i,j,k,6)
+
+               D_z = rb_d0 + (rb_dh - rb_d0) * z 
+               M_z = rb_m0 + (rb_mh - rb_m0) * z 
+
+               uh = sqrt(ux*ux+uy*uy)
+               E = .5d0*(ux*ux+uy*uy+uz*uz)
+
+               liquid(k*liquidVars+0) = liquid(k*liquidVars+0) + area*D
+               liquid(k*liquidVars+1) = liquid(k*liquidVars+1) + area*M
+               liquid(k*liquidVars+2) = liquid(k*liquidVars+2) + area*ux
+               liquid(k*liquidVars+3) = liquid(k*liquidVars+3) + area*uy
+               liquid(k*liquidVars+4) = liquid(k*liquidVars+4) + area*uz
+               liquid(k*liquidVars+5) = liquid(k*liquidVars+5) + area*uh
+               liquid(k*liquidVars+6) = liquid(k*liquidVars+6) + area*ux*ux
+               liquid(k*liquidVars+7) = liquid(k*liquidVars+7) + area*uy*uy
+               liquid(k*liquidVars+8) = liquid(k*liquidVars+8) + area*uz*uz
+               liquid(k*liquidVars+9) = liquid(k*liquidVars+9) + area*E
+
+               liquid(k*liquidVars+10) = liquid(k*liquidVars+10) + area*(D-D_z)
+               liquid(k*liquidVars+11) = liquid(k*liquidVars+11) + area*(M-M_z)
+               liquid(k*liquidVars+12) = liquid(k*liquidVars+12) + area*Q
+
 
             end do
          end do
