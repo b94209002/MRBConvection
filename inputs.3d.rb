@@ -7,7 +7,7 @@ max_step 		= 10
 
 stop_time 		= 120.0
 
-amr.n_cell              = 64 64 64
+amr.n_cell              = 128 128 64
 
 amr.max_level           = 0
 
@@ -35,7 +35,7 @@ amr.probin_file 	= probin.3d.rb
 geometry.coord_sys   =  0
 
 geometry.prob_lo     =  0. 0. 0.
-geometry.prob_hi     =  1. 1. 1.
+geometry.prob_hi     =  2. 2. 1.
 
 geometry.is_periodic =  1 1 0
 
@@ -52,6 +52,8 @@ amr.blocking_factor     = 8
 amr.ref_ratio           = 2 2 2 2
 
 ns.sum_interval         = 1
-amr.derive_plot_vars    = energy
+#ns.turb_interval        = 10
+ns.liquid_interval      = 1
+amr.derive_plot_vars    = energy liquid_water
 
 proj.v=1

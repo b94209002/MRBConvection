@@ -1149,6 +1149,50 @@ c
 
       end
 
+      subroutine FORT_DERLIQUIDVARS(e,DIMS(e),nv,dat,DIMS(dat),ncomp,
+     &                            lo,hi,domlo,domhi,delta,xlo,time,dt,
+     &                            bc,level,grid_no)
+
+      implicit none
+
+      integer    lo(SDIM), hi(SDIM)
+      integer    DIMDEC(e)
+      integer    DIMDEC(dat)
+      integer    domlo(SDIM), domhi(SDIM)
+      integer    nv, ncomp
+      integer    bc(SDIM,2,ncomp)
+      REAL_T     delta(SDIM), xlo(SDIM)
+      REAL_T     time, dt
+      REAL_T     e(DIMV(e),nv)
+      REAL_T     dat(DIMV(dat),ncomp)
+      integer    level, grid_no
+
+      integer    i,j,k
+      REAL_T     hz,z, hn, tmp
+
+#include <probdata.H>
+
+      hz = delta(3)
+      hn = one/rb_bv
+
+      do k = lo(3), hi(3)
+         z = xlo(3) + hz * ( dble( k-lo(3) ) + half ) 
+         do j = lo(2), hi(2)
+            do i = lo(1), hi(1)
+               e(i,j,k,1) = dat(i,j,k,1)
+               e(i,j,k,2) = dat(i,j,k,2)
+               e(i,j,k,3) = dat(i,j,k,3)
+               e(i,j,k,4) = dat(i,j,k,4)
+               e(i,j,k,5) = dat(i,j,k,5)
+               tmp = e(i,j,k,2) - e(i,j,k,1) + rb_bv * z
+               e(i,j,k,6) = max(0.d0, hn*tmp)
+            enddo
+         enddo
+      enddo
+
+      end
+
+
 #ifdef SUMJET
       subroutine FORT_DERJETPRESVARS (e,DIMS(gp),nv,dat,DIMS(dat),ncomp,
      &                                lo,hi,domlo,domhi,delta,xlo,time,dt,
