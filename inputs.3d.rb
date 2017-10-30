@@ -18,9 +18,9 @@ amr.regrid_int		= 2
 ns.v                    = 1
 amr.v                   = 1
 
-amr.check_int		= 10000 
+amr.check_int		= 20000 
 
-amr.plot_int		= 200
+amr.plot_int		= 500
 
 ns.cfl                  = 0.7  # CFL number used to set dt
 
@@ -51,7 +51,7 @@ ns.hi_bc             = 0 0 4
 amr.blocking_factor     = 8
 amr.ref_ratio           = 2 2 2 2
 
-ns.sum_interval         = 1
-amr.derive_plot_vars    = energy
+ns.sum_interval         = 100
+amr.derive_plot_vars    = energy liquid_water
 
 proj.v=1
