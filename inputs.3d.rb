@@ -51,7 +51,7 @@ ns.hi_bc             = 0 0 4
 amr.blocking_factor     = 8
 amr.ref_ratio           = 2 2 2 2
 
-ns.sum_interval         = 100
+ns.liquid_interval      = 100
 amr.derive_plot_vars    = energy liquid_water
 
 proj.v=1
