@@ -818,7 +818,7 @@ c ::
       dy = delta(2)
       dz = delta(3)
 
-      area =dx*dy
+      area = dx*dy*(xhi(1) - xlo(1))*(xhi(2) - xlo(2))
 
       do k = klo, khi
          z = xlo(3) + dz * ( dble( k-klo ) + half )
