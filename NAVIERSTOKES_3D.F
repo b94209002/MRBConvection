@@ -801,7 +801,7 @@ c ::
       integer ihi, jhi, khi
 
       REAL_T dx, dy, dz, area,z
-      REAL_T D,M,ux,uy,uz,uh,Q
+      REAL_T D,M,B,ux,uy,uz,uh,Q
       REAL_T D_z,M_z,E
 
 
@@ -830,7 +830,8 @@ c ::
                ux = dat(i,j,k,3)
                uy = dat(i,j,k,4)
                uz = dat(i,j,k,5)
-               Q = dat(i,j,k,6)
+               B = dat(i,j,k,6)
+               Q = dat(i,j,k,7)
 
                D_z = rb_d0 + (rb_dh - rb_d0) * z 
                M_z = rb_m0 + (rb_mh - rb_m0) * z 
@@ -840,19 +841,27 @@ c ::
 
                liquid(k*liquidVars+0) = liquid(k*liquidVars+0) + area*D
                liquid(k*liquidVars+1) = liquid(k*liquidVars+1) + area*M
-               liquid(k*liquidVars+2) = liquid(k*liquidVars+2) + area*ux
-               liquid(k*liquidVars+3) = liquid(k*liquidVars+3) + area*uy
-               liquid(k*liquidVars+4) = liquid(k*liquidVars+4) + area*uz
-               liquid(k*liquidVars+5) = liquid(k*liquidVars+5) + area*uh
-               liquid(k*liquidVars+6) = liquid(k*liquidVars+6) + area*ux*ux
-               liquid(k*liquidVars+7) = liquid(k*liquidVars+7) + area*uy*uy
-               liquid(k*liquidVars+8) = liquid(k*liquidVars+8) + area*uz*uz
-               liquid(k*liquidVars+9) = liquid(k*liquidVars+9) + area*E
+               liquid(k*liquidVars+2) = liquid(k*liquidVars+2) + area*B
+               liquid(k*liquidVars+3) = liquid(k*liquidVars+3) + area*ux
+               liquid(k*liquidVars+4) = liquid(k*liquidVars+4) + area*uy
+               liquid(k*liquidVars+5) = liquid(k*liquidVars+5) + area*uz
+               liquid(k*liquidVars+6) = liquid(k*liquidVars+6) + area*uh
+               liquid(k*liquidVars+7) = liquid(k*liquidVars+7) + area*uz*uz
+               liquid(k*liquidVars+8) = liquid(k*liquidVars+8) + area*E
+               liquid(k*liquidVars+9) = liquid(k*liquidVars+9) + area*Q
 
+               ! averaged terms
                liquid(k*liquidVars+10) = liquid(k*liquidVars+10) + area*(D-D_z)
                liquid(k*liquidVars+11) = liquid(k*liquidVars+11) + area*(M-M_z)
-               liquid(k*liquidVars+12) = liquid(k*liquidVars+12) + area*Q
 
+               ! vertical flux terms
+               liquid(k*liquidVars+12) = liquid(k*liquidVars+12) + area*uz*D
+               liquid(k*liquidVars+13) = liquid(k*liquidVars+13) + area*uz*M
+               liquid(k*liquidVars+14) = liquid(k*liquidVars+14) + area*uz*B
+               liquid(k*liquidVars+15) = liquid(k*liquidVars+15) + area*uz*(D-D_z)
+               liquid(k*liquidVars+16) = liquid(k*liquidVars+16) + area*uz*(M-M_z)
+               liquid(k*liquidVars+17) = liquid(k*liquidVars+17) + area*uz*uh*uh*.5d0
+               liquid(k*liquidVars+18) = liquid(k*liquidVars+18) + area*uz*Q
 
             end do
          end do

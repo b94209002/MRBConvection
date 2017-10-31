@@ -1184,8 +1184,9 @@ c
                e(i,j,k,3) = dat(i,j,k,3)
                e(i,j,k,4) = dat(i,j,k,4)
                e(i,j,k,5) = dat(i,j,k,5)
+               e(i,j,k,6) = max(dat(i,j,k,2), dat(i,j,k,1) - rb_bv*z)
                tmp = e(i,j,k,2) - e(i,j,k,1) + rb_bv * z
-               e(i,j,k,6) = max(0.d0, hn*tmp)
+               e(i,j,k,7) = max(0.d0, hn*tmp)
             enddo
          enddo
       enddo
