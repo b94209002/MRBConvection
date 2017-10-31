@@ -3826,7 +3826,7 @@ NavierStokesBase::sum_liquid_quantities ()
     const int finestLevel = parent->finestLevel();
     const Real *dx = parent->Geom(finestLevel).CellSize();
     const int ksize(parent->Geom(finestLevel).Domain().length(2));
-    const int liquidVars(13);
+    const int liquidVars(19);
     int refRatio(1);
    
     Real* liquid = new Real[liquidVars*ksize];
