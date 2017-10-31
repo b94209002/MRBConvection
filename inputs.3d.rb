@@ -20,7 +20,7 @@ amr.v                   = 1
 
 amr.check_int		= 20000 
 
-amr.plot_int		= 500
+amr.plot_int		= 100
 
 ns.cfl                  = 0.7  # CFL number used to set dt
 
