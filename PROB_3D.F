@@ -1301,11 +1301,6 @@ c
          end do
       end do
 
-      call bl_pd_is_ioproc(isioproc)
-      if (isioproc.eq.1) then
-      OPEN(8, FILE='data.test',FORM='UNFORMATTED') 
-      endif
-
       end
 
 c
