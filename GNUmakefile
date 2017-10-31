@@ -9,7 +9,7 @@ TOP = ../
 #
 
 DIM        = 3
-COMP	   = intel
+COMP	   = gnu
 DEBUG	   = FALSE
 USE_MPI    = TRUE
 USE_OPENMP = FALSE

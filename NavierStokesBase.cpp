@@ -3866,7 +3866,7 @@ NavierStokesBase::sum_liquid_quantities ()
         const int steps = parent->levelSteps(0);
         FILE *file;
 
-        std::string filename = amrex::Concatenate("LiquidData/LiquidData_", steps, 4);
+        std::string filename = amrex::Concatenate("LiquidData/LiquidData_", steps, 6);
         filename += ".dat";
 
         file = fopen(filename.c_str(),"w");
