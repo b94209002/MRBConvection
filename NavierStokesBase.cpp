@@ -3823,6 +3823,7 @@ void
 NavierStokesBase::sum_liquid_quantities ()
 {
     Real time = state[State_Type].curTime();
+    Real dt = time - state[State_Type].prevTime();
     const int finestLevel = parent->finestLevel();
     const Real *dx = parent->Geom(finestLevel).CellSize();
     const int ksize(parent->Geom(finestLevel).Domain().length(2));
@@ -3870,6 +3871,8 @@ NavierStokesBase::sum_liquid_quantities ()
         filename += ".dat";
 
         file = fopen(filename.c_str(),"w");
+	fprintf(file,"%e \n",time);
+	fprintf(file,"%e \n",dt);
         for (int k=0; k<ksize; k++)
         {
             fprintf(file,"%e ",dx[2]*(0.5+(double)k));
