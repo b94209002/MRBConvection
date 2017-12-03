@@ -1266,7 +1266,7 @@ c
       REAL_T  x, y, z
       REAL_T  hx, hy, hz
       REAL_T  pert,ztemp
-
+      double precision rn
       integer isioproc
 
 #include <probdata.H>
@@ -1274,6 +1274,20 @@ c
       hx = dx(1)
       hy = dx(2)
       hz = dx(3)
+
+      call blutilinitrand(111397)
+      do i = 1, rt_nfreq
+          do j = 1, rt_nfreq
+               call blutilrand(rn)
+               rt_ranampl(i,j) = 2.d0*(rn-0.5d0)
+               call blutilrand(rn)
+               rt_ranphse(i,j,1) = 2.d0*rt_PI*rn
+               call blutilrand(rn)
+               rt_ranphse(i,j,2) = 2.d0*rt_PI*rn
+          end do
+      end do
+
+
 
       do j = lo(2), hi(2)
          y = xlo(2) + hy*(dble(j-lo(2)) + 0.5d0)

@@ -3,7 +3,7 @@
 # INPUTS.3D.EULER
 #*******************************************************************************
 
-max_step 		= 10
+max_step 		= 50
 
 stop_time 		= 120.0
 
@@ -20,7 +20,7 @@ amr.v                   = 1
 
 amr.check_int		= 10000 
 
-amr.plot_int		= 50
+amr.plot_int		= 5
 
 ns.cfl                  = 0.7  # CFL number used to set dt
 
