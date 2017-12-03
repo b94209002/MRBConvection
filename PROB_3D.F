@@ -123,7 +123,7 @@ c ::: -----------------------------------------------------------
       namelist /fortin/ do_inlet_ref, inlet_ref_height
       namelist /fortin/ lid_vel
 
-      namelist /fortin/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv 
+      namelist /fortin/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega 
 c
 c      Build "probin" filename -- the name of file containing fortin namelist.
 c
@@ -4064,8 +4064,8 @@ c     else to zero
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
                   do i = ilo, ihi
-                     force(i,j,k,nXvel) = zero
-                     force(i,j,k,nYvel) = zero
+                     force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
+                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nXvel))
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
                   enddo
                enddo

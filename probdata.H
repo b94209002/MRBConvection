@@ -11,7 +11,7 @@
       REAL_T  density_pert, interface_height, wavelength_min, wavelength_max, tracer_height
       REAL_T  jet_sponge_scale, jet_sponge_height, jet_sponge_radius
       REAL_T  phi1(10), phi2(10)
-      REAL_T  rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv
+      REAL_T  rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega
       integer probtype, adv_dir, axis_dir, vb_unifdir, blrandseed, plane_jet, do_jet_sponge
       integer ref_type
       common /probdt1/ probtype, adv_dir, axis_dir, ref_type
