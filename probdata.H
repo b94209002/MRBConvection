@@ -28,7 +28,7 @@
      &                  do_jet_sponge, jet_sponge_scale, jet_sponge_height, jet_sponge_radius
       common /probdt11/ thermal_expansion, heating_coeff, heating_centre, heating_radius
       common /probdt12/ density_pert, interface_height, wavelength_min, wavelength_max, tracer_height, phi1, phi2
-      common /probdt30/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv
+      common /probdt30/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega
 
       integer max_eul_freq
       parameter (max_eul_freq = 2)	
