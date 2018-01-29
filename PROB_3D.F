@@ -1265,7 +1265,7 @@ c
       integer i, j, k, n, m
       REAL_T  x, y, z
       REAL_T  hx, hy, hz
-      REAL_T  pert,ztemp
+      REAL_T  pert,ztemp,kt,dem,zp,zm,Ev
       double precision rn
       integer isioproc
 
@@ -1275,41 +1275,24 @@ c
       hy = dx(2)
       hz = dx(3)
 
-      call blutilinitrand(111397)
-      do i = 1, rt_nfreq
-          do j = 1, rt_nfreq
-               call blutilrand(rn)
-               rt_ranampl(i,j) = 2.d0*(rn-0.5d0)
-               call blutilrand(rn)
-               rt_ranphse(i,j,1) = 2.d0*rt_PI*rn
-               call blutilrand(rn)
-               rt_ranphse(i,j,2) = 2.d0*rt_PI*rn
-          end do
-      end do
-
-
+      Ev = 0.2d0
+      kt =  one/sqrt(Ev)
+      dem = one/(cos(two*kt) + cosh(two*kt))
 
       do j = lo(2), hi(2)
          y = xlo(2) + hy*(dble(j-lo(2)) + 0.5d0)
          do i = lo(1), hi(1)
             x = xlo(1) + hx*(dble(i-lo(1)) + 0.5d0)
-            pert = 0.d0
-            do n = 1, rt_nfreq
-               do m = 1, rt_nfreq
-                  pert = pert
-     &                 + rt_pertamp*sin(2.0D0*rt_PI*dble(n)*x + rt_ranphse(n,m,1))
-     &                 * sin(2.0D0*rt_PI*dble(m)*y + rt_ranphse(n,m,2))
-               end do
-            end do
-            pert = pert / dble(rt_nfreq**2)
             do k = lo(3), hi(3)
                z = xlo(3) + hz*(dble(k-lo(3)) + 0.5d0)
+               zp = kt*(one+z)
+               zm = kt*(one-z)
                scal(i,j,k,1) = rb_rho
-               vel(i,j,k,1) = 0.d0
-               vel(i,j,k,2) = 0.d0
+               vel(i,j,k,1) = one - dem*(cos(zp)*cosh(zm)+cosh(zp)*cos(zm))
+               vel(i,j,k,2) = dem*(sinh(zm)*sin(zp)+sinh(zp)*sin(zm))
                vel(i,j,k,3) = 0.d0 
-               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z + pert*(cos(.5d0*rt_PI*z)**3)
-               scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z + pert*(cos(.5d0*rt_PI*z)**3)
+               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z
+               scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z 
 
             end do
          end do
@@ -4065,7 +4048,7 @@ c     else to zero
                do j = jlo, jhi
                   do i = ilo, ihi
                      force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
-                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nXvel))
+                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*( -one + vel(i,j,k,nXvel)))
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
                   enddo
                enddo
