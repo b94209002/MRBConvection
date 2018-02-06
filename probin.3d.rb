@@ -16,7 +16,7 @@
   rb_dh = 1.736e-1
   rb_m0 = 0.
   rb_mh = -5.222e-1
-  rb_bv = 6.958e-1
+  rb_bv = 3.5e-1
   rb_omega = 1.0
 
  /

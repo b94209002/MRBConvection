@@ -3,11 +3,11 @@
 # INPUTS.3D.EULER
 #*******************************************************************************
 
-max_step 		= 1200
+max_step 		= 2400
 
 stop_time 		= 120.0
 
-amr.n_cell              = 32 32 128
+amr.n_cell              = 64 64 64
 
 amr.max_level           = 0
 
@@ -26,16 +26,16 @@ ns.cfl                  = 0.7  # CFL number used to set dt
 
 ns.init_shrink          = 1.0  # factor which multiplies the very first time step
 
-ns.vel_visc_coef        = 0.1 
-ns.scal_diff_coefs      = 0.1 0.1
+ns.vel_visc_coef        = 0.001 
+ns.scal_diff_coefs      = 0.001 0.001
 ns.do_trac2             = 1
 
 amr.probin_file 	= probin.3d.rb
 
 geometry.coord_sys   =  0
 
-geometry.prob_lo     =  -0.25 -0.25 -1.
-geometry.prob_hi     =  0.25 0.25 1.
+geometry.prob_lo     =  -1. -1. -1.
+geometry.prob_hi     =  1. 1. 1.
 
 geometry.is_periodic =  1 1 0
 
@@ -59,4 +59,3 @@ amr.derive_plot_vars    = energy liquid_water
 proj.v=1
 proj.proj_tol = 1.e-12
 proj.proj_abs_tol = 1.e-14
-mg.v=2

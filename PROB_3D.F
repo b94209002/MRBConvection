@@ -1288,9 +1288,11 @@ c
                zp = kt*(one+z)
                zm = kt*(one-z)
                scal(i,j,k,1) = rb_rho
-               vel(i,j,k,1) = one - dem*(cos(zp)*cosh(zm)+cosh(zp)*cos(zm))
-               vel(i,j,k,2) = dem*(sinh(zm)*sin(zp)+sinh(zp)*sin(zm))
-               vel(i,j,k,3) = 0.d0 
+               vel(i,j,k,1) = zero
+               vel(i,j,k,2) = zero
+!               vel(i,j,k,1) = one - dem*(cos(zp)*cosh(zm)+cosh(zp)*cos(zm))
+!               vel(i,j,k,2) = dem*(sinh(zm)*sin(zp)+sinh(zp)*sin(zm))
+               vel(i,j,k,3) = zero 
                scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z
                scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z 
 
@@ -3687,6 +3689,7 @@ c
       REAL_T  kxd, kyd, kzd
       REAL_T  xt, yt, zt
       REAL_T  zlo
+      REAL_T  Ug
       integer kx, ky, kz, mode_count, xstep, ystep, zstep, count
       integer isioproc, do_trac2
       integer nXvel, nYvel, nZvel, nRho, nTrac, nTrac2, nRhoScal, nTracScal, nTrac2Scal
@@ -4046,9 +4049,11 @@ c     else to zero
             do k = klo, khi
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
+                  y = xlo(2) + hy*(float(j-jlo) + half)
+                  Ug = cos(y*Pi)*tanh(z)
                   do i = ilo, ihi
                      force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
-                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*( -one + vel(i,j,k,nXvel)))
+                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*(vel(i,j,k,nXvel)-Ug))
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
                   enddo
                enddo
@@ -4080,7 +4085,7 @@ c
                do k = klo, khi
                   do j = jlo, jhi
                      do i = ilo, ihi
-                        force(i,j,k,n) = zero
+                        force(i,j,k,n) = -scal(i,j,k,nRhoScal)*rb_bv*vel(i,j,k,nZvel)
                      enddo
                   enddo
                enddo
