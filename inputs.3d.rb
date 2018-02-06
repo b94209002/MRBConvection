@@ -34,7 +34,7 @@ amr.probin_file 	= probin.3d.rb
 
 geometry.coord_sys   =  0
 
-geometry.prob_lo     =  -1. -1. -1.
+geometry.prob_lo     =  0. 0. 0.
 geometry.prob_hi     =  1. 1. 1.
 
 geometry.is_periodic =  1 1 0

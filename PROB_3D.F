@@ -1275,10 +1275,6 @@ c
       hy = dx(2)
       hz = dx(3)
 
-      Ev = 0.2d0
-      kt =  one/sqrt(Ev)
-      dem = one/(cos(two*kt) + cosh(two*kt))
-
       do j = lo(2), hi(2)
          y = xlo(2) + hy*(dble(j-lo(2)) + 0.5d0)
          do i = lo(1), hi(1)
@@ -1290,8 +1286,6 @@ c
                scal(i,j,k,1) = rb_rho
                vel(i,j,k,1) = zero
                vel(i,j,k,2) = zero
-!               vel(i,j,k,1) = one - dem*(cos(zp)*cosh(zm)+cosh(zp)*cos(zm))
-!               vel(i,j,k,2) = dem*(sinh(zm)*sin(zp)+sinh(zp)*sin(zm))
                vel(i,j,k,3) = zero 
                scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z
                scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z 
@@ -4050,11 +4044,12 @@ c     else to zero
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
                   y = xlo(2) + hy*(float(j-jlo) + half)
-                  Ug = cos(y*Pi)*tanh(z)
+                  Ug = cos(2.d0*y*Pi)*tanh(2.d0*(z-0.5d0))
                   do i = ilo, ihi
                      force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
                      force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*(vel(i,j,k,nXvel)-Ug))
-                     force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
+!                     force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
+                      force(i,j,k,nZvel) = scal(i,j,k,nTracScal) - rb_bv*z
                   enddo
                enddo
             enddo
