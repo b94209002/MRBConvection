@@ -13,10 +13,10 @@
 
   rb_rho = 1.
   rb_d0 = 0.
-  rb_dh = 1.736e-1
+  rb_dh = 0.
   rb_m0 = 0.
   rb_mh = -5.222e-1
-  rb_bv = 7.0e-1
+  rb_bv = 0.
   rb_omega = 1.0
 
  /

@@ -3,9 +3,9 @@
 # INPUTS.3D.EULER
 #*******************************************************************************
 
-max_step 		= 2400
+max_step 		= 90000
 
-stop_time 		= 120.0
+stop_time 		= 1000.0
 
 amr.n_cell              = 64 64 64
 
@@ -20,9 +20,10 @@ amr.v                   = 1
 
 amr.check_int		= 10000 
 
-amr.plot_int		= 30
+#amr.plot_int		= 200
+amr.plot_per            = 10.
 
-ns.cfl                  = 0.7  # CFL number used to set dt
+ns.cfl                  = 0.9  # CFL number used to set dt
 
 ns.init_shrink          = 1.0  # factor which multiplies the very first time step
 
