@@ -3683,7 +3683,7 @@ c
       REAL_T  kxd, kyd, kzd
       REAL_T  xt, yt, zt
       REAL_T  zlo
-      REAL_T  Ug
+      REAL_T  Ug,Vg,Rad,Rad0
       integer kx, ky, kz, mode_count, xstep, ystep, zstep, count
       integer isioproc, do_trac2
       integer nXvel, nYvel, nZvel, nRho, nTrac, nTrac2, nRhoScal, nTracScal, nTrac2Scal
@@ -4040,13 +4040,26 @@ c     Default to gravity...
             enddo
 c     else to zero
          else
+            Rad0 = 1.d0
             do k = klo, khi
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
                   y = xlo(2) + hy*(float(j-jlo) + half)
-                  Ug = cos(2.d0*y*Pi)*tanh(2.d0*(z-0.5d0))
                   do i = ilo, ihi
-                     force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
+                     x = xlo(1) + hx*(float(i-ilo) + half)
+                     Rad = sqrt(x*x+y*y)
+                     if (Rad .LT. Rad0) then
+                        
+                     Ug = -0.01d0/Rad0/Rad0*x
+                     Vg = 0.01d0/Rad0/Rad0*y
+
+                     else 
+                     Ug = -0.01d0/Rad*x/Rad
+                     Vg = 0.01d0/Rad*y/Rad
+
+                     endif
+
+                     force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*(vel(i,j,k,nYvel)-Vg))
                      force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*(vel(i,j,k,nXvel)-Ug))
 !                     force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
                       force(i,j,k,nZvel) = scal(i,j,k,nTracScal) - rb_bv*z
