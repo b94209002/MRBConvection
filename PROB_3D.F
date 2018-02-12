@@ -4050,12 +4050,12 @@ c     else to zero
                      Rad = sqrt(x*x+y*y)
                      if (Rad .LT. Rad0) then
                         
-                     Ug = -0.01d0/Rad0/Rad0*x
-                     Vg = 0.01d0/Rad0/Rad0*y
+                     Ug = -0.01d0/Rad0/Rad0*y
+                     Vg = 0.01d0/Rad0/Rad0*x
 
                      else 
-                     Ug = -0.01d0/Rad*x/Rad
-                     Vg = 0.01d0/Rad*y/Rad
+                     Ug = -0.01d0/Rad*y/Rad
+                     Vg = 0.01d0/Rad*x/Rad
 
                      endif
 
@@ -5507,8 +5507,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
          else
             do i = ARG_L1(adv), domlo(1)-1
                do k = ARG_L3(adv), ARG_H3(adv)
+                  z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                   do j = ARG_L2(adv), ARG_H2(adv)
-                     adv(i,j,k) = zero
+                     adv(i,j,k) = rb_d0 + (rb_dh-rb_d0)*z
                   end do
                end do
             end do
@@ -5518,8 +5519,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(1,2).eq.EXT_DIR.and.ARG_H1(adv).gt.domhi(1)) then
          do i = domhi(1)+1, ARG_H1(adv)
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do j = ARG_L2(adv), ARG_H2(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_d0 + (rb_dh-rb_d0)*z
                end do
 	    end do
 	 end do
@@ -5528,8 +5530,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(2,1).eq.EXT_DIR.and.ARG_L2(adv).lt.domlo(2)) then
          do j = ARG_L2(adv), domlo(2)-1
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do i = ARG_L1(adv), ARG_H1(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_d0 + (rb_dh-rb_d0)*z
                end do
 	    end do
 	 end do
@@ -5537,9 +5540,10 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
 
       if (bc(2,2).eq.EXT_DIR.and.ARG_H2(adv).gt.domhi(2)) then
          do j = domhi(2)+1, ARG_H2(adv)
-            do k = ARG_L3(adv), ARG_H3(adv)
+            do k = ARG_L3(adv), ARG_H3(adv) 
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do i = ARG_L1(adv), ARG_H1(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_d0 + (rb_dh-rb_d0)*z
                end do
 	    end do
 	 end do
@@ -5643,8 +5647,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(1,1).eq.EXT_DIR.and.ARG_L1(adv).lt.domlo(1)) then
          do i = ARG_L1(adv), domlo(1)-1
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do j = ARG_L2(adv), ARG_H2(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_m0 + (rb_mh-rb_m0)*z
                end do
 	    end do
 	 end do
@@ -5653,8 +5658,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(1,2).eq.EXT_DIR.and.ARG_H1(adv).gt.domhi(1)) then
          do i = domhi(1)+1, ARG_H1(adv)
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do j = ARG_L2(adv), ARG_H2(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_m0 + (rb_mh-rb_m0)*z
                end do
 	    end do
 	 end do
@@ -5663,8 +5669,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(2,1).eq.EXT_DIR.and.ARG_L2(adv).lt.domlo(2)) then
          do j = ARG_L2(adv), domlo(2)-1
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do i = ARG_L1(adv), ARG_H1(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_m0 + (rb_mh-rb_m0)*z
                end do
 	    end do
 	 end do
@@ -5673,8 +5680,9 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
       if (bc(2,2).eq.EXT_DIR.and.ARG_H2(adv).gt.domhi(2)) then
          do j = domhi(2)+1, ARG_H2(adv)
             do k = ARG_L3(adv), ARG_H3(adv)
+               z = xlo(3) + dx(3)*(float(k-lo(3)) + half)
                do i = ARG_L1(adv), ARG_H1(adv)
-                  adv(i,j,k) = zero
+                  adv(i,j,k) = rb_m0 + (rb_mh-rb_m0)*z
                end do
 	    end do
 	 end do
@@ -5901,6 +5909,7 @@ c ::: -----------------------------------------------------------
       REAL_T     umid,rmid,lamv,lamr,rfact
       REAL_T     hx, hy, hz, gpert, z,  ypert, magwif, constn
       REAL_T     jv, s, t, xc, yc
+      REAL_T     Rad,Rad0
 
       REAL_T plateVel, factor
 
@@ -5991,9 +6000,11 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             end do
          else
             do i = ARG_L1(u), domlo(1)-1
+               x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
                do k = ARG_L3(u), ARG_H3(u)
                   do j = ARG_L2(u), ARG_H2(u)
-                     u(i,j,k) = x_vel
+                     y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                     u(i,j,k) = -0.01d0*y/(x*x + y*y)
                   end do
                end do
             end do
@@ -6002,9 +6013,11 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
 
       if (bc(1,2).eq.EXT_DIR.and.ARG_H1(u).gt.domhi(1)) then
          do i = domhi(1)+1, ARG_H1(u)
+            x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = ARG_L3(u), ARG_H3(u)
                do j = ARG_L2(u), ARG_H2(u)
-                  u(i,j,k) = x_vel
+                  y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                  u(i,j,k) =  -0.01d0*y/(x*x + y*y)
                end do
 	    end do
 	 end do
@@ -6012,9 +6025,11 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
 
       if (bc(2,1).eq.EXT_DIR.and.ARG_L2(u).lt.domlo(2)) then
          do j = ARG_L2(u), domlo(2)-1
+            y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
             do k = ARG_L3(u), ARG_H3(u)
                do i = ARG_L1(u), ARG_H1(u)
-                  u(i,j,k) = zero
+                  x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                  u(i,j,k) = -0.01d0*y/(x*x + y*y)
                end do
 	    end do
 	 end do
@@ -6022,9 +6037,11 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
 
       if (bc(2,2).eq.EXT_DIR.and.ARG_H2(u).gt.domhi(2)) then
          do j = domhi(2)+1, ARG_H2(u)
+            y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
             do k = ARG_L3(u), ARG_H3(u)
                do i = ARG_L1(u), ARG_H1(u)
-                  u(i,j,k) = zero
+               x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                  u(i,j,k) = -0.01d0*y/(x*x + y*y)
                end do
 	    end do
 	 end do
@@ -6134,7 +6151,19 @@ c     call vswirlXYZ(x,y,u1,u2,u3)
                      else if (probtype.eq.15) then
                         u(i,j,k) = plateVel(x,y,z,1,0.d0) * factor
                      else
-                        u(i,j,k) = zero
+                     Rad0 = 1.d0
+                     y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                     Rad = sqrt(x*x+y*y)
+                     if (Rad .LT. Rad0) then
+
+                     u(i,j,k) = -0.01d0/Rad0/Rad0*y
+
+                     else
+                     u(i,j,k) = -0.01d0/Rad*y/Rad
+
+                     endif
+!                        u(i,j,k) = zero
                      endif
 
 #ifdef BL_DO_FLCT
@@ -6246,6 +6275,7 @@ c ::: -----------------------------------------------------------
       REAL_T     rn
       REAL_T     jv, s, t, xc, yc
       REAL_T plateVel, factor
+      REAL_T     Rad,Rad0 
 #include <probdata.H>
 
 #ifdef BL_DO_FLCT
@@ -6306,9 +6336,11 @@ c ::: -----------------------------------------------------------
 
       if (bc(1,1).eq.EXT_DIR.and.ARG_L1(v).lt.domlo(1)) then
          do i = ARG_L1(v), domlo(1)-1
+            x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = ARG_L3(v), ARG_H3(v)
                do j = ARG_L2(v), ARG_H2(v)
-                  v(i,j,k) = zero
+               y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                  v(i,j,k) = 0.01d0*x/(x*x+y*y) 
                end do
 	    end do
 	 end do
@@ -6316,9 +6348,11 @@ c ::: -----------------------------------------------------------
 
       if (bc(1,2).eq.EXT_DIR.and.ARG_H1(v).gt.domhi(1)) then
          do i = domhi(1)+1, ARG_H1(v)
+            x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = ARG_L3(v), ARG_H3(v)
                do j = ARG_L2(v), ARG_H2(v)
-                  v(i,j,k) = zero
+               y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                  v(i,j,k) = 0.01d0*x/(x*x+y*y)
                end do
             end do
 	 end do
@@ -6326,9 +6360,11 @@ c ::: -----------------------------------------------------------
 
       if (bc(2,1).eq.EXT_DIR.and.ARG_L2(v).lt.domlo(2)) then
          do j = ARG_L2(v), domlo(2)-1
+            y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
             do k = ARG_L3(v), ARG_H3(v)
                do i = ARG_L1(v), ARG_H1(v)
-                  v(i,j,k) = y_vel
+               x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                  v(i,j,k) = 0.01d0*x/(x*x+y*y)
                end do
             end do
 	 end do
@@ -6336,9 +6372,11 @@ c ::: -----------------------------------------------------------
 
       if (bc(2,2).eq.EXT_DIR.and.ARG_H2(v).gt.domhi(2)) then
          do j = domhi(2)+1, ARG_H2(v)
+            y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
             do k = ARG_L3(v), ARG_H3(v)
                do i = ARG_L1(v), ARG_H1(v)
-                  v(i,j,k) = y_vel
+               x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                  v(i,j,k) = 0.01d0*x/(x*x+y*y)
                end do
             end do
 	 end do
@@ -6441,7 +6479,21 @@ c     call vswirlXYZ(x,y,u1,u2,u3)
                      else if (probtype.eq.15) then
                         v(i,j,k) = plateVel(x,y,z,2,0.d0) * factor
                      else
-                        v(i,j,k) = zero
+                         Rad0 = 1.d0
+                         y = xlo(2) + dx(2)*(float(j-lo(2)) + half)
+                         x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
+                         Rad = sqrt(x*x+y*y)
+                         if (Rad .LT. Rad0) then
+
+                         v(i,j,k) = 0.01d0/Rad0/Rad0*x
+
+                         else
+                         v(i,j,k) = 0.01d0/Rad*x/Rad
+
+                         endif
+
+
+!                        v(i,j,k) = zero
                      endif
 
 #ifdef BL_DO_FLCT

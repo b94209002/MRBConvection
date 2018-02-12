@@ -7,7 +7,7 @@ max_step 		= 100
 
 stop_time 		= 100.0
 
-amr.n_cell              = 128 128 32
+amr.n_cell              = 256 256 32
 
 amr.max_level           = 0
 
@@ -23,9 +23,9 @@ amr.check_int		= 10000
 amr.plot_int		= 10
 #amr.plot_per            = 10.
 
-ns.cfl                  = 0.9  # CFL number used to set dt
+ns.cfl                  = 0.5  # CFL number used to set dt
 
-ns.init_shrink          = 1.0  # factor which multiplies the very first time step
+ns.init_shrink          = 0.1  # factor which multiplies the very first time step
 
 ns.vel_visc_coef        = 0.01 
 ns.scal_diff_coefs      = 0.01 0.01
@@ -35,15 +35,15 @@ amr.probin_file 	= probin.3d.rb
 
 geometry.coord_sys   =  0
 
-geometry.prob_lo     =  -2. -2. 0.
-geometry.prob_hi     =  2. 2. 1.
+geometry.prob_lo     =  -4. -4. 0.
+geometry.prob_hi     =  4. 4. 1.
 
 geometry.is_periodic =  0 0 0
 
 ns.gravity = 0.0
 
-ns.lo_bc             = 2 2 5
-ns.hi_bc             = 2 2 5
+ns.lo_bc             = 5 5 5
+ns.hi_bc             = 5 5 2
 
 # 0 = Interior/Periodic  3 = Symmetry
 # 1 = Inflow             4 = SlipWall

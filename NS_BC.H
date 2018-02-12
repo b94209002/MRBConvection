@@ -10,7 +10,7 @@ static int norm_vel_bc[] =
 
 static int tang_vel_bc[] =
 {
-    INT_DIR, EXT_DIR, FOEXTRAP, REFLECT_EVEN, HOEXTRAP, EXT_DIR
+    INT_DIR, EXT_DIR, EXT_DIR, REFLECT_EVEN, HOEXTRAP, EXT_DIR
 };
 
 static int scalar_bc[] =
