@@ -123,7 +123,9 @@ c ::: -----------------------------------------------------------
       namelist /fortin/ do_inlet_ref, inlet_ref_height
       namelist /fortin/ lid_vel
 
-      namelist /fortin/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega 
+! -------MH, rb density -------------------------------------
+      namelist /fortin/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega
+
 c
 c      Build "probin" filename -- the name of file containing fortin namelist.
 c
@@ -286,7 +288,8 @@ c
 
       endif
 
-      if ( probtype .eq. 10 ) then
+!      if ( probtype .eq. 10) then
+      if ( probtype .eq. 10 .or. probtype .eq. 31) then
          if ( rt_max_freq .lt. rt_nfreq ) then
             stop 'RT_INIT broken: 1'
          end if
@@ -1222,7 +1225,7 @@ c
      &                 * sin(
      &                 2.0D0*rt_PI*dble(m)*y/f_probhi(2) + rt_ranphse(n,m,2)
      &                 )
-  
+     &                 *rt_ranampl(n,m)
                end do
             end do
             ztemp = rt_splitx - pert*rt_pertamp
@@ -1244,7 +1247,7 @@ c
 
       end
 c
-c ::: --------------------------------
+c ::: -----------------------------------------------------------
 c
       subroutine initrb(level,time,lo,hi,nscal,
      &                      vel,scal,DIMS(state),press,DIMS(press),
@@ -1265,7 +1268,7 @@ c
       integer i, j, k, n, m
       REAL_T  x, y, z
       REAL_T  hx, hy, hz
-      REAL_T  pert,ztemp
+      REAL_T  pert,ztemp,kt,dem,zp,zm,Ev
       double precision rn
       integer isioproc
 
@@ -1275,20 +1278,6 @@ c
       hy = dx(2)
       hz = dx(3)
 
-      call blutilinitrand(111397)
-      do i = 1, rt_nfreq
-          do j = 1, rt_nfreq
-               call blutilrand(rn)
-               rt_ranampl(i,j) = 2.d0*(rn-0.5d0)
-               call blutilrand(rn)
-               rt_ranphse(i,j,1) = 2.d0*rt_PI*rn
-               call blutilrand(rn)
-               rt_ranphse(i,j,2) = 2.d0*rt_PI*rn
-          end do
-      end do
-
-
-
       do j = lo(2), hi(2)
          y = xlo(2) + hy*(dble(j-lo(2)) + 0.5d0)
          do i = lo(1), hi(1)
@@ -1296,20 +1285,23 @@ c
             pert = 0.d0
             do n = 1, rt_nfreq
                do m = 1, rt_nfreq
-                  pert = pert
-     &                 + rt_pertamp*sin(2.0D0*rt_PI*dble(n)*x + rt_ranphse(n,m,1))
-     &                 * sin(2.0D0*rt_PI*dble(m)*y + rt_ranphse(n,m,2))
+                  pert = pert + rt_ranampl(n,m)
+     &                 * sin(2.0D0*rt_PI*dble(n)*x/f_probhi(1) + rt_ranphse(n,m,1) )
+     &                 * sin(2.0D0*rt_PI*dble(m)*y/f_probhi(2) + rt_ranphse(n,m,2) )
                end do
             end do
-            pert = pert / dble(rt_nfreq**2)
+            ztemp = rt_splitx - pert*rt_pertamp
+
             do k = lo(3), hi(3)
                z = xlo(3) + hz*(dble(k-lo(3)) + 0.5d0)
+               zp = kt*(one+z)
+               zm = kt*(one-z)
                scal(i,j,k,1) = rb_rho
-               vel(i,j,k,1) = 0.d0
-               vel(i,j,k,2) = 0.d0
-               vel(i,j,k,3) = 0.d0 
-               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z + pert*(cos(.5d0*rt_PI*z)**3)
-               scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z + pert*(cos(.5d0*rt_PI*z)**3)
+               vel(i,j,k,1) = zero
+               vel(i,j,k,2) = zero
+               vel(i,j,k,3) = zero
+               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * (z-ztemp*cos(z*rt_pi*.5d0))
+               scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z
 
             end do
          end do
@@ -3704,6 +3696,7 @@ c
       REAL_T  kxd, kyd, kzd
       REAL_T  xt, yt, zt
       REAL_T  zlo
+      REAL_T  Ug,Vg,Rad,Rad0
       integer kx, ky, kz, mode_count, xstep, ystep, zstep, count
       integer isioproc, do_trac2
       integer nXvel, nYvel, nZvel, nRho, nTrac, nTrac2, nRhoScal, nTracScal, nTrac2Scal
@@ -4060,16 +4053,35 @@ c     Default to gravity...
             enddo
 c     else to zero
          else
+            Rad0 = 1.d0
             do k = klo, khi
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
+                  y = xlo(2) + hy*(float(j-jlo) + half)
                   do i = ilo, ihi
-                     force(i,j,k,nXvel) =   scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nYvel))
-                     force(i,j,k,nYvel) = - scal(i,j,k,nRhoScal)*(rb_omega*vel(i,j,k,nXvel))
+                     x = xlo(1) + hx*(float(i-ilo) + half)
+
+                     force(i,j,k,nXvel) = scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nYvel)
+                     force(i,j,k,nYvel) = -scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nXvel)
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
+!                     force(i,j,k,nZvel) = scal(i,j,k,nTracScal) - rb_bv*z
                   enddo
                enddo
             enddo
+
+
+
+
+
+c            do k = klo, khi
+c               do j = jlo, jhi
+c                  do i = ilo, ihi
+c                     force(i,j,k,nXvel) = zero
+c                     force(i,j,k,nYvel) = zero
+c                     force(i,j,k,nZvel) = zero
+c                  enddo
+c               enddo
+c            enddo
          endif
 c     End of velocity forcing
       endif
@@ -4206,7 +4218,7 @@ c
 
 c     ::: -----------------------------------------------------------
 c     ::: This routine will tag high error cells based on the 
-c     ::: density gradient
+c     ::: magnitude or gradient of the density
 c     ::: 
 c     ::: INPUTS/OUTPUTS:
 c     ::: 
@@ -4278,7 +4290,7 @@ c     ::: -----------------------------------------------------------
 
 c ::: -----------------------------------------------------------
 c ::: This routine will tag high error cells based on the 
-c ::: density gradient
+c ::: magnitude of the tracer
 c ::: 
 c ::: INPUTS/OUTPUTS:
 c ::: 
@@ -4633,7 +4645,7 @@ c     probtype = VISCOUS BENCHMARK
 
 c ::: -----------------------------------------------------------
 c ::: This routine will tag high error cells based on the
-c ::: temperature gradient
+c ::: magnitude or gradient of temperature
 c :::
 c ::: INPUTS/OUTPUTS:
 c :::
@@ -5193,7 +5205,7 @@ c ::: -----------------------------------------------------------
                  if ((probtype.eq.26) .or. (probtype.eq.28)) then
                     rho(i,j,k) = 1.d0
                  else
-                    rho(i,j,k) = den2
+                    rho(i,j,k) = den2 
                  endif
               enddo
               enddo
@@ -5336,7 +5348,8 @@ c           write (6,*) "Filling with unit density"
            do k = ARG_L3(rho), domlo(3)-1
               do j = ARG_L2(rho), ARG_H2(rho)
                  do i = ARG_L1(rho), ARG_H1(rho)
-                    rho(i,j,k) = denfact
+!                    rho(i,j,k) = denfact
+                     rho(i,j,k) = rb_rho
                  end do
               end do
            end do
@@ -5356,7 +5369,8 @@ c           write (6,*) "Filling with unit density"
             do k = domhi(3)+1, ARG_H3(rho)
                do j = ARG_L2(rho), ARG_H2(rho)
                   do i = ARG_L1(rho), ARG_H1(rho)
-                     rho(i,j,k) = denfact
+!                     rho(i,j,k) = denfact
+                      rho(i,j,k) = rb_rho
                   end do
                end do
             end do
@@ -5595,7 +5609,8 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = ARG_L3(adv), domlo(3)-1
                do j = ARG_L2(adv), ARG_H2(adv)
                   do i = ARG_L1(adv), ARG_H1(adv)
-                     adv(i,j,k) = rb_d0
+!                     adv(i,j,k) = zero
+                      adv(i,j,k) = rb_d0
                   end do
                end do
             end do
@@ -5606,7 +5621,8 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
          do k = domhi(3)+1, ARG_H3(adv)
             do j = ARG_L2(adv), ARG_H2(adv)
                do i = ARG_L1(adv), ARG_H1(adv)
-                  adv(i,j,k) = rb_dh
+!                  adv(i,j,k) = zero
+                   adv(i,j,k) = rb_dh
                end do
             end do
          end do
@@ -5704,7 +5720,8 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = ARG_L3(adv), domlo(3)-1
                do j = ARG_L2(adv), ARG_H2(adv)
                   do i = ARG_L1(adv), ARG_H1(adv)
-                     adv(i,j,k) = zero
+!                     adv(i,j,k) = zero
+                      adv(i,j,k) = rb_m0
                   end do
                end do
             end do
@@ -5722,7 +5739,7 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
                         r = sqrt( x*x + y*y )
                         adv(i,j,k) = merge(one,zero,r.le.jet_width)
                      else
-                        adv(i,j,k) = rb_m0
+                        adv(i,j,k) = zero
                      endif
                   enddo
                enddo
@@ -5731,7 +5748,8 @@ c                     x = xlo(1) + dx(1)*(float(i-lo(1)) + half)
             do k = domhi(3)+1, ARG_H3(adv)
                do j = ARG_L2(adv), ARG_H2(adv)
                   do i = ARG_L1(adv), ARG_H1(adv)
-                     adv(i,j,k) = rb_mh
+C                     adv(i,j,k) = zero
+                      adv(i,j,k) = rb_mh
                   end do
                end do
             end do

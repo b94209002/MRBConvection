@@ -40,7 +40,7 @@
       common /probdt12_i/ eul_nfreq
 
       integer rt_max_freq
-      parameter (RT_MAX_FREQ = 10)	
+      parameter (RT_MAX_FREQ = 32)	
       REAL_T rt_splitx, rt_xfrontw, rt_den_1, rt_den_2
       REAL_T rt_ranampl(RT_MAX_FREQ,RT_MAX_FREQ)
       REAL_T rt_ranphse(RT_MAX_FREQ,RT_MAX_FREQ,2)

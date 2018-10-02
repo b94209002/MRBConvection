@@ -155,7 +155,7 @@ NavierStokes::initData ()
             DataServices::Dispatch(DataServices::ExitRequest, NULL);
     
         AmrData&           amrData   = dataServices.AmrDataRef();
-        Array<std::string> plotnames = amrData.PlotVarNames();
+        Vector<std::string> plotnames = amrData.PlotVarNames();
 
         int idX = -1;
         for (int i = 0; i < plotnames.size(); ++i)
@@ -197,6 +197,10 @@ NavierStokes::initData ()
 
         state[State_Type].setTimeLevel(cur_time,dt,dt);
 
+	if (variable_scal_diff)
+	  //Make sure something reasonable is in diffn_cc
+	  calcDiffusivity(cur_time);
+	
         calc_divu(cur_time,dtin,Divu_new);
 
         if (have_dsdt)
@@ -211,7 +215,7 @@ NavierStokes::initData ()
     is_first_step_after_regrid = false;
     old_intersect_new          = grids;
 
-#ifdef PARTICLES
+#ifdef AMREX_PARTICLES
     initParticleData ();
 #endif
 }
@@ -364,8 +368,8 @@ NavierStokes::advance (Real time,
            p_avg.setVal(0);
     }
 
-#ifdef PARTICLES
-    if (theNSPC() != 0)
+#ifdef AMREX_PARTICLES
+    if (theNSPC() != 0 and NavierStokes::initial_iter != true)
     {
         theNSPC()->AdvectWithUmac(u_mac, level, dt);
     }
@@ -423,7 +427,7 @@ NavierStokes::predict_velocity (Real  dt,
 
     FArrayBox tforces;
 
-    Array<int> bndry[BL_SPACEDIM];
+    Vector<int> bndry[BL_SPACEDIM];
 
     MultiFab Gp(grids,dmap,BL_SPACEDIM,1);
 
@@ -576,7 +580,7 @@ NavierStokes::scalar_advection (Real dt,
         else
             vel_visc_terms.setVal(0,1);
     }
-    Array<int> state_bc, bndry[BL_SPACEDIM];
+    Vector<int> state_bc, bndry[BL_SPACEDIM];
     //
     // Compute the advective forcing.
     //
@@ -660,6 +664,7 @@ NavierStokes::scalar_advection (Real dt,
             //
             int use_conserv_diff = (advectionType[state_ind] == Conservative) ? true : false;
 
+            //AdvectionScheme adv_scheme = FPU;
             AdvectionScheme adv_scheme = PRE_MAC;
 
             if (adv_scheme == PRE_MAC)
@@ -1002,10 +1007,10 @@ NavierStokes::sum_integrated_quantities ()
     // Real mass = 0.0;
     // Real trac = 0.0;
     Real energy = 0.0;
+    Real mgvort = 0.0;
+    Real udotlapu = 0.0;
+    Real forcing = 0.0;
     Real liquid_water = 0.0;
-    // Real mgvort = 0.0;
-    // Real udotlapu = 0.0;
-    // Real forcing = 0.0;
 
     for (int lev = 0; lev <= finest_level; lev++)
     {
@@ -1013,39 +1018,37 @@ NavierStokes::sum_integrated_quantities ()
         // mass += ns_level.volWgtSum("density",time);
         // trac += ns_level.volWgtSum("tracer",time);
         energy += ns_level.volWgtSum("energy",time);
-	liquid_water += ns_level.volWgtSum("liquid_water",time);
-/*
         mgvort = std::max(mgvort,ns_level.MaxVal("mag_vort",time));
+        liquid_water += ns_level.volWgtSum("liquid_water",time);
 #if (BL_SPACEDIM==3)
         udotlapu += ns_level.volWgtSum("udotlapu",time);
 #if defined(GENGETFORCE) || defined(MOREGENGETFORCE)
 	forcing += ns_level.volWgtSum("forcing",time);
 #endif
 #endif
-*/
     }
 
     amrex::Print() << '\n';
     // amrex::Print().SetPrecision(12) << "TIME= " << time << " MASS= " << mass << '\n';
     // amrex::Print().SetPrecision(12) << "TIME= " << time << " TRAC= " << trac << '\n';
     amrex::Print().SetPrecision(12) << "TIME= " << time << " KENG= " << energy << '\n';
-    amrex::Print().SetPrecision(12) << "TIME= " << time << " LIQUID= " << liquid_water << '\n';
-
-/*    amrex::Print().SetPrecision(12) << "TIME= " << time << " MAGVORT= " << mgvort << '\n';
+    amrex::Print().SetPrecision(12) << "TIME= " << time << " MAGVORT= " << mgvort << '\n';
     amrex::Print().SetPrecision(12) << "TIME= " << time << " ENERGY= " << energy << '\n';
+    // amrex::Print().SetPrecision(12) << "TIME= " << time << " LIQUID= " << liquid_water << '\n';
 #if (BL_SPACEDIM==3)
     amrex::Print().SetPrecision(12) << "TIME= " << time << " UDOTLAPU= " << udotlapu << '\n';
 #if defined(GENGETFORCE) || defined(MOREGENGETFORCE)
     amrex::Print().SetPrecision(12) << "TIME= " << time << " FORCING= " << forcing << '\n';
 #endif
 #endif
-*/
 }
+
 void
 NavierStokes::setPlotVariables()
 {
     AmrLevel::setPlotVariables();
 }
+
 void
 NavierStokes::writePlotFile (const std::string& dir,
                              std::ostream&  os,
@@ -1071,6 +1074,7 @@ NavierStokes::writePlotFile (const std::string& dir,
     int num_derive = 0;
     std::list<std::string> derive_names;
     const std::list<DeriveRec>& dlist = derive_lst.dlist();
+
 
     for (std::list<DeriveRec>::const_iterator it = dlist.begin(), end = dlist.end();
          it != end;
@@ -1346,7 +1350,7 @@ NavierStokes::derive (const std::string& name,
                       Real               time,
                       int                ngrow)
 {
-#ifdef PARTICLES
+#ifdef AMREX_PARTICLES
     return ParticleDerive(name, time, ngrow);
 #else
     return AmrLevel::derive(name, time, ngrow);
@@ -1359,7 +1363,7 @@ NavierStokes::derive (const std::string& name,
                       MultiFab&          mf,
                       int                dcomp)
 {
-#ifdef PARTICLES
+#ifdef AMREX_PARTICLES
         ParticleDerive(name,time,mf,dcomp);
 #else
         AmrLevel::derive(name,time,mf,dcomp);
@@ -1380,8 +1384,8 @@ NavierStokes::post_init (Real stop_time)
 
     const int   finest_level = parent->finestLevel();
     Real        dt_init      = 0.0;
-    Array<Real> dt_save(finest_level+1);
-    Array<int>  nc_save(finest_level+1);
+    Vector<Real> dt_save(finest_level+1);
+    Vector<int>  nc_save(finest_level+1);
     //
     // Ensure state is consistent, i.e. velocity field is non-divergent,
     // Coarse levels are fine level averages, pressure is zero.
@@ -1422,8 +1426,8 @@ NavierStokes::post_init (Real stop_time)
 
 void
 NavierStokes::post_init_press (Real&        dt_init,
-                               Array<int>&  nc_save,
-                               Array<Real>& dt_save)
+                               Vector<int>&  nc_save,
+                               Vector<Real>& dt_save)
 {
     const Real strt_time       = state[State_Type].curTime();
     const int  finest_level    = parent->finestLevel();
@@ -1440,7 +1444,7 @@ NavierStokes::post_init_press (Real&        dt_init,
         //
         // This constructs a guess at P, also sets p_old == p_new.
         //
-        Array<MultiFab*> sig(finest_level+1, nullptr);
+        Vector<MultiFab*> sig(finest_level+1, nullptr);
 
         for (int k = 0; k <= finest_level; k++)
         {
@@ -1683,8 +1687,8 @@ NavierStokes::mac_sync ()
         //
         const int N = grids.size();
 
-        Array<int*>         sync_bc(N);
-        Array< Array<int> > sync_bc_array(N);
+        Vector<int*>         sync_bc(N);
+        Vector< Vector<int> > sync_bc_array(N);
 
         for (int i = 0; i < N; i++)
         {
@@ -1998,7 +2002,7 @@ NavierStokes::getViscTerms (MultiFab& visc_terms,
     // not allow for calling NavierStokes::getViscTerms with src_comp=Yvel
     // or Zvel
     //
-#ifndef NDEBUG
+#ifdef AMREX_DEBUG
     if (src_comp<BL_SPACEDIM && (src_comp!=Xvel || ncomp<BL_SPACEDIM))
     {
       amrex::Print() << "src_comp=" << src_comp << "   ncomp=" << ncomp << '\n';
