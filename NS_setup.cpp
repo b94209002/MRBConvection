@@ -465,8 +465,14 @@ NavierStokes::variableSetUp ()
 #endif
 //3D
 #endif
+    //
+    // Liquid Water content computed by piecewise linear formula
+    //
+    derive_lst.add("liquid_water",IndexType::TheCellType(),1,FORT_DERLIQUID,the_same_box);
+    derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac,1);
+    derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac2,1);
 
-#ifdef PARTICLES
+#ifdef AMREX_PARTICLES
     //
     // The particle count at this level.
     //
@@ -480,15 +486,8 @@ NavierStokes::variableSetUp ()
                    FORT_DERNULL,the_same_box);
     derive_lst.addComponent("total_particle_count",desc_lst,State_Type,Density,1);
 #endif
-    derive_lst.add("liquid_water",IndexType::TheCellType(),1,FORT_DERLIQUID,the_same_box);
-    derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac,1);
-    derive_lst.addComponent("liquid_water",desc_lst,State_Type,Trac2,2);
 
-    derive_lst.add("liquidVars",IndexType::TheCellType(),7,FORT_DERLIQUIDVARS,grow_box_by_one);
-    derive_lst.addComponent("liquidVars",desc_lst,State_Type,Trac,1);
-    derive_lst.addComponent("liquidVars",desc_lst,State_Type,Trac2,1);
-    derive_lst.addComponent("liquidVars",desc_lst,State_Type,Xvel,BL_SPACEDIM);
-
+    //
     // **************  DEFINE ERROR ESTIMATION QUANTITIES  *************
     //
     error_setup();

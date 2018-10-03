@@ -1,8 +1,7 @@
 FEXE_headers += probdata.H PROB_F.H DERIVE_F.H NS_BC.H
-CEXE_headers += NavierStokesBase.H
 FEXE_sources += PROB_$(DIM)D.F 
 FEXE_sources += DERIVE_$(DIM)D.F
-CEXE_sources += NavierStokes.cpp NavierStokesBase.cpp NS_setup.cpp
+CEXE_sources += NS_setup.cpp
 
 ifeq (${USE_SWIRL_DATA}, TRUE)
   fEXE_sources += vswirl.f
