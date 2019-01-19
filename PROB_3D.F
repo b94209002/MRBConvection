@@ -4123,26 +4123,14 @@ c
 c
 c     Tracer
 c
-               if (do_trac2 .eq. 1) then
-                  do k = klo, khi
-                     do j = jlo, jhi
-                        do i = ilo, ihi
-c                           force(i,j,k,n) = zero
-                            tmp = (rb_dh-rb_d0)/(rb_mh-rb_m0)    
-                            force(i,j,k,n) = tmp*vel(i,j,k,nZvel)
-                        enddo
+               do k = klo, khi
+                  do j = jlo, jhi
+                     do i = ilo, ihi
+c                        force(i,j,k,n) = zero
+                         force(i,j,k,n) = vel(i,j,k,nZvel)
                      enddo
                   enddo
-               else
-                  do k = klo, khi
-                     do j = jlo, jhi
-                        do i = ilo, ihi
-c                           force(i,j,k,n) = zero
-                            force(i,j,k,n) = vel(i,j,k,nZvel)
-                        enddo
-                     enddo
-                  enddo
-               endif 
+               enddo
 
 
             else if (n.eq.nTrac2.and.do_trac2.eq.1) then
