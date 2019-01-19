@@ -1265,7 +1265,7 @@ c
 c
 c     ::::: local variables
 c
-      integer i, j, k, n, m
+      integer i, j, k, n, m, do_trac2
       REAL_T  x, y, z
       REAL_T  hx, hy, hz
       REAL_T  pert,ztemp,kt,dem,zp,zm,Ev
@@ -1273,6 +1273,8 @@ c
       integer isioproc
 
 #include <probdata.H>
+
+      call bl_ns_dotrac2(do_trac2)
 
       hx = dx(1)
       hy = dx(2)
@@ -1301,8 +1303,9 @@ c
                vel(i,j,k,2) = zero
                vel(i,j,k,3) = zero
                scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * (z-ztemp*cos(z*rt_pi*.5d0))
-               scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z
-
+               if (do_trac2 .eq. 1) then
+                  scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z
+               endif
             end do
          end do
       end do
