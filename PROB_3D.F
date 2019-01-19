@@ -3696,7 +3696,7 @@ c
       REAL_T  kxd, kyd, kzd
       REAL_T  xt, yt, zt
       REAL_T  zlo
-      REAL_T  Ug,Vg,Rad,Rad0
+      REAL_T  tmp
       integer kx, ky, kz, mode_count, xstep, ystep, zstep, count
       integer isioproc, do_trac2
       integer nXvel, nYvel, nZvel, nRho, nTrac, nTrac2, nRhoScal, nTracScal, nTrac2Scal
@@ -4053,7 +4053,7 @@ c     Default to gravity...
             enddo
 c     else to zero
          else
-            Rad0 = 1.d0
+            if (do_trac2 .eq. 1) then
             do k = klo, khi
                z = xlo(3) + hz*(float(k-klo) + half)
                do j = jlo, jhi
@@ -4064,11 +4064,25 @@ c     else to zero
                      force(i,j,k,nXvel) = scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nYvel)
                      force(i,j,k,nYvel) = -scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nXvel)
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
-!                     force(i,j,k,nZvel) = scal(i,j,k,nTracScal) - rb_bv*z
+
                   enddo
                enddo
             enddo
+            else
+           do k = klo, khi
+               z = xlo(3) + hz*(float(k-klo) + half)
+               do j = jlo, jhi
+                  y = xlo(2) + hy*(float(j-jlo) + half)
+                  do i = ilo, ihi
+                     x = xlo(1) + hx*(float(i-ilo) + half)
+                     force(i,j,k,nXvel) = scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nYvel)
+                     force(i,j,k,nYvel) =-scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nXvel)
+                     force(i,j,k,nZvel) = scal(i,j,k,nTracScal) 
 
+                  enddo
+               enddo
+            enddo
+            endif
 
 
 
@@ -4106,13 +4120,28 @@ c
 c
 c     Tracer
 c
-               do k = klo, khi
-                  do j = jlo, jhi
-                     do i = ilo, ihi
-                        force(i,j,k,n) = zero
+               if (do_trac2 .eq. 1) then
+                  do k = klo, khi
+                     do j = jlo, jhi
+                        do i = ilo, ihi
+c                           force(i,j,k,n) = zero
+                            tmp = (rb_dh-rb_d0)/(rb_mh-rb_m0)    
+                            force(i,j,k,n) = tmp*vel(i,j,k,nZvel)
+                        enddo
                      enddo
                   enddo
-               enddo
+               else
+                  do k = klo, khi
+                     do j = jlo, jhi
+                        do i = ilo, ihi
+c                           force(i,j,k,n) = zero
+                            force(i,j,k,n) = vel(i,j,k,nZvel)
+                        enddo
+                     enddo
+                  enddo
+               endif 
+
+
             else if (n.eq.nTrac2.and.do_trac2.eq.1) then
 c
 c     Other scalar
@@ -4171,7 +4200,8 @@ c     Some other probtype
                   do k = klo, khi
                      do j = jlo, jhi
                         do i = ilo, ihi
-                           force(i,j,k,n) = zero
+C                           force(i,j,k,n) = zero
+                            force(i,j,k,n) = vel(i,j,k,nZvel)
                         enddo
                      enddo
                   enddo
