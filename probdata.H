@@ -11,7 +11,7 @@
       REAL_T  density_pert, interface_height, wavelength_min, wavelength_max, tracer_height
       REAL_T  jet_sponge_scale, jet_sponge_height, jet_sponge_radius
       REAL_T  phi1(10), phi2(10)
-      REAL_T  rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega
+      REAL_T  rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega,rb_RaD,rb_RaM
       integer probtype, adv_dir, axis_dir, vb_unifdir, blrandseed, plane_jet, do_jet_sponge
       integer ref_type
       common /probdt1/ probtype, adv_dir, axis_dir, ref_type
@@ -28,7 +28,7 @@
      &                  do_jet_sponge, jet_sponge_scale, jet_sponge_height, jet_sponge_radius
       common /probdt11/ thermal_expansion, heating_coeff, heating_centre, heating_radius
       common /probdt12/ density_pert, interface_height, wavelength_min, wavelength_max, tracer_height, phi1, phi2
-      common /probdt30/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega
+      common /probdt30/ rb_rho,rb_d0,rb_dh,rb_m0,rb_mh,rb_bv,rb_omega,rb_RaD,rb_RaM
 
       integer max_eul_freq
       parameter (max_eul_freq = 2)	

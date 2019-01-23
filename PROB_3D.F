@@ -1280,6 +1280,9 @@ c
       hy = dx(2)
       hz = dx(3)
 
+      rb_RaD = (rb_d0-rb_dh)/(xhi(3) - xlo(3))
+      rb_RaM = (rb_m0-rb_mh)/(xhi(3) - xlo(3))
+      
       do j = lo(2), hi(2)
          y = xlo(2) + hy*(dble(j-lo(2)) + 0.5d0)
          do i = lo(1), hi(1)
@@ -4127,7 +4130,7 @@ c
                   do j = jlo, jhi
                      do i = ilo, ihi
 c                        force(i,j,k,n) = zero
-                         force(i,j,k,n) = vel(i,j,k,nZvel)
+                         force(i,j,k,n) = rb_RaD * vel(i,j,k,nZvel)
                      enddo
                   enddo
                enddo
@@ -4192,7 +4195,7 @@ c     Some other probtype
                      do j = jlo, jhi
                         do i = ilo, ihi
 C                           force(i,j,k,n) = zero
-                            force(i,j,k,n) = vel(i,j,k,nZvel)
+                            force(i,j,k,n) = rb_RaM * vel(i,j,k,nZvel)
                         enddo
                      enddo
                   enddo
