@@ -234,7 +234,7 @@ NavierStokes::variableSetUp ()
     advectionType[Density] = Conservative;
     if (do_temp) advectionType[Temp] = NonConservative;
 
-    advectionType[Trac] = NonConservative;
+    advectionType[Trac] = Conservative;
     diffusionType[Trac] = Laplacian_S; if (do_cons_trac) {
       advectionType[Trac] = Conservative;
       diffusionType[Trac] = Laplacian_SoverRho;
@@ -242,7 +242,7 @@ NavierStokes::variableSetUp ()
     }
 
     if (do_trac2) {
-	advectionType[Trac2] = NonConservative;
+	advectionType[Trac2] = Conservative;
 	diffusionType[Trac2] = Laplacian_S;
 	if (do_cons_trac2) {
 	  advectionType[Trac2] = Conservative;

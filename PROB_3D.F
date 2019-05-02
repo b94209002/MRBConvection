@@ -1295,7 +1295,7 @@ c
      &                 * sin(2.0D0*rt_PI*dble(m)*y/f_probhi(2) + rt_ranphse(n,m,2) )
                end do
             end do
-            ztemp = rt_splitx - pert*rt_pertamp
+            ztemp = rt_splitx - pert*rt_pertamp/dble(rt_nfreq**2)
 
             do k = lo(3), hi(3)
                z = xlo(3) + hz*(dble(k-lo(3)) + 0.5d0)
@@ -1305,9 +1305,9 @@ c
                vel(i,j,k,1) = zero
                vel(i,j,k,2) = zero
                vel(i,j,k,3) = zero
-               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * (z-ztemp*cos(z*rt_pi*.5d0))
+               scal(i,j,k,2) = rb_d0 + (rb_dh - rb_d0) * z - ztemp*(cos(z*rt_pi*.5d0))
                if (do_trac2 .eq. 1) then
-                  scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z
+                  scal(i,j,k,3) = rb_m0 + (rb_mh - rb_m0) * z + ztemp*(cos(z*rt_pi*.5d0))
                endif
             end do
          end do
@@ -4059,6 +4059,7 @@ c     Default to gravity...
             enddo
 c     else to zero
          else
+
             if (do_trac2 .eq. 1) then
             do k = klo, khi
                z = xlo(3) + hz*(float(k-klo) + half)
@@ -4070,7 +4071,6 @@ c     else to zero
                      force(i,j,k,nXvel) = scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nYvel)
                      force(i,j,k,nYvel) = -scal(i,j,k,nRhoScal)*rb_omega*vel(i,j,k,nXvel)
                      force(i,j,k,nZvel) = max(scal(i,j,k,nTrac2Scal), scal(i,j,k,nTracScal) - rb_bv*z)
-
                   enddo
                enddo
             enddo
@@ -4129,12 +4129,11 @@ c
                do k = klo, khi
                   do j = jlo, jhi
                      do i = ilo, ihi
-c                        force(i,j,k,n) = zero
-                         force(i,j,k,n) = rb_RaD * vel(i,j,k,nZvel)
+                        force(i,j,k,n) = zero
+C                         force(i,j,k,n) = rb_RaD * vel(i,j,k,nZvel)
                      enddo
                   enddo
                enddo
-
 
             else if (n.eq.nTrac2.and.do_trac2.eq.1) then
 c
@@ -4194,8 +4193,8 @@ c     Some other probtype
                   do k = klo, khi
                      do j = jlo, jhi
                         do i = ilo, ihi
-C                           force(i,j,k,n) = zero
-                            force(i,j,k,n) = rb_RaM * vel(i,j,k,nZvel)
+                           force(i,j,k,n) = zero
+C                            force(i,j,k,n) = rb_RaM * vel(i,j,k,nZvel)
                         enddo
                      enddo
                   enddo

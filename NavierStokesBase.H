@@ -371,6 +371,7 @@ protected:
                     amrex::Real               time);
 
 #if (BL_SPACEDIM == 3)
+    void time_avg_quantities ();
     void sum_turbulent_quantities ();
     void TurbSum (amrex::Real time, amrex::Real *tmp, int  ksize, int turbVars);
 #ifdef SUMJET

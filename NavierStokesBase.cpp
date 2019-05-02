@@ -3826,6 +3826,20 @@ NavierStokesBase::volWgtSum (const std::string& name,
 
 #if (BL_SPACEDIM == 3)
 void
+NavierStokesBase::time_avg_quantities ()
+{
+    Real time = state[State_Type].curTime();
+    const int finestLevel = parent->finestLevel();
+    const Real *dx = parent->Geom(finestLevel).CellSize();
+    const int velVars(1);
+    int refRatio(1);
+
+    Real* vel = new Real[velVars];
+
+    delete [] vel;
+}
+
+void
 NavierStokesBase::sum_turbulent_quantities ()
 {
     Real time = state[State_Type].curTime();
